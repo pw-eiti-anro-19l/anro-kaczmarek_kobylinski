@@ -1,0 +1,12 @@
+background_b: 255
+background_g: 86
+background_r: 150
+rosdistro: 'melodic
+
+  '
+roslaunch:
+  uris: {host_pantera_robotyka_ia_pw_edu_pl__41033: 'http://pantera.robotyka.ia.pw.edu.pl:41033/'}
+rosversion: '1.14.3
+
+  '
+run_id: a5048416-4bf3-11e9-82d1-ecb1d735afc0
