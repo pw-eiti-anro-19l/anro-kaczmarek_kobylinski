@@ -2,3 +2,8 @@ up: w
 down: s
 left: a
 right: d
+up_value: 2
+down_value: -2
+left_value: 1
+right_value: -1
+
