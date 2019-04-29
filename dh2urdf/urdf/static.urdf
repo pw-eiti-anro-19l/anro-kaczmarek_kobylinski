@@ -4,30 +4,42 @@
     <xacro:property name="l_width" value="0.02"/>
  
     <material name="red">
-        <color rgba="0.8 0 0 1"/>
+        <color rgba="1 0 0 1"/>
     </material>
 
     <material name="yellow"> 
         <color rgba="1 1 0 1"/>
     </material>
 
+    <material name="blue"> 
+        <color rgba="0 0 1 1"/>
+    </material>
+
+    <material name="green"> 
+        <color rgba="0 1 0 1"/>
+    </material>
+
+    <material name="purple"> 
+        <color rgba="0 1 1 1"/>
+    </material>
+
 
     <link name="base_link">
         <visual>
             <geometry>
-                <cylinder length="0.04" radius="0.05"/>
+                <cylinder length="0.04" radius="0.15"/>
             </geometry>
-            <origin xyz="0 0 -0.02"/>
+            <origin xyz="0 0 0.02"/>
             <material name="yellow"/>
         </visual>
     </link>
 
     <link name="link_1">
         <visual>
-            <geometry>
-                <box size="${props['i2']['l_len']} ${l_width} ${l_width}"/>
+ 	    <geometry>
+                <cylinder length="${props['i1']['l_len']}" radius="0.05"/>
             </geometry>
-            <origin xyz="${props['i2']['l_xyz']}" rpy="${props['i2']['l_rpy']}"/>
+            <origin xyz="0 0 ${props['i1']['l_len']/2}" rpy="0 0 0"/>
             <material name="red"/>
         </visual>
     </link>
@@ -35,36 +47,141 @@
     <link name="link_2">
         <visual>
             <geometry>
-                <box size="${props['i3']['l_len']} ${l_width} ${l_width}"/>
+                <cylinder length="${props['i2']['l_len']}" radius = "0.05"/>
             </geometry>
-            <origin xyz="${props['i3']['l_xyz']}" rpy="${props['i3']['l_rpy']}"/>
-            <material name="red"/>
+            <origin xyz="0 ${props['i2']['l_len']/2} 0" rpy="0 ${props['i2']['l_rot']} ${props['i2']['l_rot']}"/>
+            <material name="blue"/>
         </visual>
     </link>
 
     <link name="link_3">
         <visual>
-            <origin xyz="0 0 0.1" rpy="0 0 0"/>
-            <material name="red"/>
+            <geometry>
+                <cylinder length="${props['i3']['l_len']}" radius = "0.05"/>
+            </geometry>
+            <origin xyz="-${props['i3']['l_len']/2} 0 0" rpy="0 1.57 0"/>
+            <material name="green"/>
         </visual>
     </link>
+
+    <link name="join2">
+	<visual>
+	    <geometry>
+                <sphere radius="0.2"/>
+            </geometry>
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+	    <material name="purple"/>
+        </visual>
+    </link>
+   
+    <link name="join3">
+        <visual>
+          <geometry>
+            <sphere  radius="0.2"/>
+          </geometry>
+          <origin xyz="0 0 0" rpy="0 0 0"/>
+	  <material name="purple"/>
+        </visual>
+    </link>
+
+
+
+
+
+
+  <link name="left_gripper">
+    <visual>
+      <origin rpy="0.0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="package://dh2urdf/meshes/l_finger.dae"/>
+      </geometry>
+    </visual>
+  </link>
+
+  <joint name="left_tip_joint" type="fixed">
+    <parent link="left_gripper"/>
+    <child link="left_tip"/>
+  </joint>
+
+  <link name="left_tip">
+    <visual>
+      <origin rpy="0.0 0 0" xyz="0.09137 0.00495 0"/>
+      <geometry>
+        <mesh filename="package://dh2urdf/meshes/l_finger_tip.dae"/>
+      </geometry>
+    </visual>
+  </link>
+
+  <joint name="right_gripper_joint" type="fixed">
+    <origin rpy="0 0 0" xyz="0 -0.01 0"/>
+    <parent link="link_3"/>
+    <child link="right_gripper"/>
+  </joint>
+
+  <link name="right_gripper">
+    <visual>
+      <origin rpy="-3.1415 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="package://dh2urdf/meshes/l_finger.dae"/>
+      </geometry>
+    </visual>
+  </link>
+
+  <joint name="right_tip_joint" type="fixed">
+    <parent link="right_gripper"/>
+    <child link="right_tip"/>
+  </joint>
+
+  <link name="right_tip">
+    <visual>
+      <origin rpy="-3.1415 0 0" xyz="0.09137 0.00495 0"/>
+      <geometry>
+        <mesh filename="package://dh2urdf/meshes/l_finger_tip.dae"/>
+      </geometry>
+    </visual>
+  </link>
+
+  <joint name="left_gripper_joint" type="fixed">
+    <origin rpy="0 0 0" xyz="0 0.01 0"/>
+    <parent link="link_3"/>
+    <child link="left_gripper"/>
+  </joint>
+
+
+
+
+
 
     <joint name="base_to_link1" type="fixed">
         <parent link="base_link"/>
         <child link="link_1"/>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <axis xyz="0 0 1"/>
+    </joint>
+
+    <joint name="link1_to_join2" type="fixed">
+        <parent link="link_1"/>
+        <child link="join2"/>
         <origin xyz="${props['i1']['j_xyz']}" rpy="${props['i1']['j_rpy']}"/>
         <axis xyz="0 0 1"/>
     </joint>
 
-    <joint name="link1_to_link2" type="fixed">
-        <parent link="link_1"/>
+    <joint name="join2_to_link2" type="fixed">
+        <parent link="join2"/>
         <child link="link_2"/>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <axis xyz="0 0 1"/>
+    </joint>
+
+    <joint name="link2_to_join3" type="fixed">
+        <parent link="link_2"/>
+        <child link="join3"/>
         <origin xyz="${props['i2']['j_xyz']}" rpy="${props['i2']['j_rpy']}"/>
         <axis xyz="0 0 1"/>
     </joint>
 
-    <joint name="link2_to_link3" type="fixed">
-        <parent link="link_2"/>
+    <joint name="join3_to_link3" type="fixed">
+        <parent link="join3"/>
         <child link="link_3"/>
         <origin xyz="${props['i3']['j_xyz']}" rpy="${props['i3']['j_rpy']}"/>
         <axis xyz="0 0 1"/>

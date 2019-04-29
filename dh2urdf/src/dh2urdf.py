@@ -1,6 +1,7 @@
 #! /usr/bin/python
 
 import json
+import math
 
 from tf.transformations import *
 
@@ -11,7 +12,7 @@ if __name__ == '__main__':
 	results = ''
 	with open('/home/kaczmi/catkin_ws/src/anro-kaczmarek_kobylinski/dh2urdf/dh.json', 'r') as file:
 		params = json.loads(file.read())
-	with open('/home/kaczmi/catkin_ws/src/anro-kaczmarek_kobylinski/dh2urdf/urdf.yaml', 'w') as file:
+	with open('../urdf.yaml', 'w') as file:
 		for key in params.keys():
 			a, d, al, th = params[key]
 			a, d, al, th = float(a), float(d), float(al), float(th)
@@ -26,9 +27,13 @@ if __name__ == '__main__':
 			rpy = euler_from_matrix(matrix)
 			xyz = translation_from_matrix(matrix)
 
+			l_len=math.sqrt(a*a+d*d)
+
 			file.write(key + ":\n")
 			file.write("  j_xyz: {} {} {}\n".format(*xyz))
 			file.write("  j_rpy: {} {} {}\n".format(*rpy))
-			file.write("  l_xyz: {} 0 0\n".format(xyz[0] / 2))
-			file.write("  l_rpy: 0 0 0\n")
-			file.write("  l_len: {}\n".format(a))
+			file.write("  l_xyz: {} {} {}\n".format(xyz[0]/2, xyz[1]/2, xyz[2]/2))
+			file.write("  l_rpy: {} {} {}\n".format(*rpy))
+			file.write("  l_len: {}\n".format(l_len))
+			file.write("  l_rot: {}\n".format(th))
+			
