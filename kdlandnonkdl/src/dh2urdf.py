@@ -10,9 +10,9 @@ xaxis, yaxis, zaxis = (1, 0, 0), (0, 1, 0), (0, 0, 1)
 if __name__ == '__main__':
 	params = {}
 	results = ''
-	with open('/home/kkaczma5/catkin_ws/src/anro-kaczmarek_kobylinski/dh2urdf/dh.json', 'r') as file:
+	with open('/home/kkaczma5/catkin_ws/src/anro-kaczmarek_kobylinski/kdlandnonkdl/dh.json', 'r') as file:
 		params = json.loads(file.read())
-	with open('/home/kkaczma5/catkin_ws/src/anro-kaczmarek_kobylinski/dh2urdf/urdf.yaml', 'w') as file:
+	with open('/home/kkaczma5/catkin_ws/src/anro-kaczmarek_kobylinski/kdlandnonkdl/urdf.yaml', 'w') as file:
 		for key in params.keys():
 			a, d, al, th = params[key]
 			a, d, al, th = float(a), float(d), float(al), float(th)
@@ -31,7 +31,10 @@ if __name__ == '__main__':
 
 			file.write("i" + key + ":\n")
 			file.write("  j_xyz: {} {} {}\n".format(*xyz))
-			file.write("  j_rpy: {} {} {}\n".format(*rpy))
+			if(key=="1"):
+				file.write("  j_rpy: {} {} {}\n".format(rpy[0], rpy[1], rpy[2]-1.57))
+			else:
+				file.write("  j_rpy: {} {} {}\n".format(*rpy))
 			file.write("  l_xyz: {} {} {}\n".format(xyz[0]/2, xyz[1]/2, xyz[2]/2))
 			file.write("  l_rpy: {} {} {}\n".format(*rpy))
 			file.write("  l_len: {}\n".format(l_len))
